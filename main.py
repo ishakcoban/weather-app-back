@@ -1,26 +1,36 @@
 from flask import Flask
 from flask_restful import Api, Resource
-from operations import LinearReg
+from operations import linearReg, decisionTree
+
 app = Flask(__name__)
 api = Api(app)
 
 
-class Linear(Resource):
+class regression(Resource):
     def get(self):
-
         json = {
-            'temperature':LinearReg('temperature'),
-            'wind': LinearReg('wind'),
-            'humidity': LinearReg('humidity'),
-            'pressure': LinearReg('pressure'),
-
+            'temperature': linearReg('temperature'),
+            'wind': linearReg('wind'),
+            'humidity': linearReg('humidity'),
+            'pressure': linearReg('pressure'),
 
         }
 
         return json
 
 
-api.add_resource(Linear, "/linear")
+class classify(Resource):
+    def get(self):
+        json = {
+            'generalWeatherResult': decisionTree(linearReg('temperature'), linearReg('wind'), linearReg('humidity'),
+                                                 linearReg('pressure'), ),
+        }
+
+        return json
+
+
+api.add_resource(regression, "/linear")
+api.add_resource(classify, "/decisionTree")
 
 if __name__ == '__main__':
     app.run('0.0.0.0', 5000)

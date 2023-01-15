@@ -1,9 +1,11 @@
-from processDataset import dataset
+from processDataset import dataset, labels
 import numpy as np
-import matplotlib.pyplot as plt
+from sklearn.datasets import load_iris
+from sklearn.model_selection import cross_val_score
+from sklearn.tree import DecisionTreeClassifier
 
 
-def LinearReg(feature):
+def linearReg(feature):
     ds = 0
     if feature == 'temperature':
         ds = dataset.iloc[:, 1]
@@ -41,8 +43,16 @@ def LinearReg(feature):
     formul = g
     return formul
 
-def decisionTree():
-    pass
+
+def decisionTree(temp, wind, hum, press):
+    clf = DecisionTreeClassifier()
+
+    x = np.array(dataset.iloc[:, 1:5])
+    y = np.array(dataset.iloc[:, 5]).astype('int')
+    clf.fit(x, y)
+    resultOfClasslabel = clf.predict(np.array([temp, wind, hum, press]).reshape(1, -1))[0]
+    return labels[resultOfClasslabel]
+
 
 def frequencyOfClothes():
     pass
