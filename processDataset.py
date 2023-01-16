@@ -1,7 +1,8 @@
 import pandas as pd
 
 dataset = pd.read_csv('./archive/weatherData.csv')
-
+clothes_dataset = pd.read_csv('./archive/clothes.csv')
+clothes_dataset = clothes_dataset.iloc[:,:7]
 labels = {0: 'Blizzard', 1: 'Cloudy', 2: 'Fog', 3: 'Heavy rain', 4: 'Partly cloudy', 5: 'Sunny', }
 
 

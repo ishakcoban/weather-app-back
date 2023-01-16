@@ -1,9 +1,11 @@
-from processDataset import dataset, labels
+import csv
+
+from processDataset import dataset, clothes_dataset, labels
 import numpy as np
-from sklearn.datasets import load_iris
-from sklearn.model_selection import cross_val_score
 from sklearn.tree import DecisionTreeClassifier
 import json
+import random
+
 
 def linearReg(feature):
     ds = 0
@@ -52,6 +54,8 @@ def decisionTree(temp, wind, hum, press):
     clf.fit(x, y)
     resultOfClasslabel = clf.predict(np.array([temp, wind, hum, press]).reshape(1, -1))[0]
     return labels[resultOfClasslabel]
+
+
 class NpEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, np.integer):
@@ -61,6 +65,7 @@ class NpEncoder(json.JSONEncoder):
         if isinstance(obj, np.ndarray):
             return obj.tolist()
         return json.JSONEncoder.default(self, obj)
+
 
 def getLastWeek():
     week = []
@@ -93,7 +98,58 @@ def getLastWeek():
 
 
 def frequencyOfClothes():
-    pass
+    # print(clothes_dataset.iloc[0,:])
+    # find all clothes id and put them to an array
+    clothes_id = clothes_dataset.iloc[:, 0]
+    print(clothes_id[random.randint(0, len(clothes_id) - 1)])
+    print(clothes_dataset.iloc[0, :])
+    # with open('students.csv', 'w', newline='') as file:
+    #    writer = csv.writer(file)
+    #
+    #    writer.writerow(["SNo", "Name", "Subject"])
+    #    writer.writerow([1, "Ash Ketchum", "English"])
+    #    writer.writerow([2, "Gary Oak", "Mathematics"])
+    #    writer.writerow([3, "Brock Lesner", "Physics"])
 
 
+def getAllCategories():
+    categories = set()
+    for i in range(0, len(clothes_dataset.iloc[:, 2])):
+        categories.add(clothes_dataset.iloc[i, 2])
+    categories = list(categories)
+    json_str = json.dumps(categories, cls=NpEncoder)
+    return json_str
+
+def getAllSubCategories():
+    subCategories = set()
+    for i in range(0, len(clothes_dataset.iloc[0:100, 3])):
+        subCategories.add(clothes_dataset.iloc[i, 3])
+    subCategories = list(subCategories)
+    json_str = json.dumps(subCategories, cls=NpEncoder)
+    return json_str
+
+def getAllTypes():
+    types = set()
+    for i in range(0, len(clothes_dataset.iloc[:, 4])):
+        types.add(clothes_dataset.iloc[i, 4])
+    types = list(types)
+    json_str = json.dumps(types, cls=NpEncoder)
+    return json_str
+
+def getAllColors():
+    colors = set()
+    for i in range(0, len(clothes_dataset.iloc[:, 5])):
+        if str(clothes_dataset.iloc[i, 5]) != 'NaN':
+            colors.add(str(clothes_dataset.iloc[i, 5]) )
+    colors = list(colors)
+    json_str = json.dumps(colors, cls=NpEncoder)
+    return json_str
+
+def getAllClothes():
+    clothes = set()
+    for i in range(0, len(clothes_dataset.iloc[0:100, 6])):
+        clothes.add(clothes_dataset.iloc[i, 6])
+    clothes = list(clothes)
+    json_str = json.dumps(clothes, cls=NpEncoder)
+    return json_str
 
