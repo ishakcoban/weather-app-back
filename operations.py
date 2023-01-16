@@ -3,7 +3,7 @@ import numpy as np
 from sklearn.datasets import load_iris
 from sklearn.model_selection import cross_val_score
 from sklearn.tree import DecisionTreeClassifier
-
+import json
 
 def linearReg(feature):
     ds = 0
@@ -52,7 +52,48 @@ def decisionTree(temp, wind, hum, press):
     clf.fit(x, y)
     resultOfClasslabel = clf.predict(np.array([temp, wind, hum, press]).reshape(1, -1))[0]
     return labels[resultOfClasslabel]
+class NpEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, np.integer):
+            return int(obj)
+        if isinstance(obj, np.floating):
+            return float(obj)
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        return json.JSONEncoder.default(self, obj)
+
+def getLastWeek():
+    week = []
+    lastWeek = dataset.iloc[len(dataset) - 7: len(dataset), :]
+    for i in range(0, len(lastWeek)):
+        if i == 0:
+            day = {
+                "temperature": linearReg("temperature"),
+                "wind": linearReg("wind"),
+                "humidity": linearReg("humidity"),
+                "pressure": linearReg("pressure"),
+                "condition": decisionTree(linearReg('temperature'), linearReg('wind'), linearReg('humidity'),
+                                          linearReg('pressure'), ),
+            }
+            json_str = json.dumps(day, cls=NpEncoder)
+            week.append(json_str)
+
+        else:
+            day = {
+                "temperature": lastWeek.iloc[i, 1],
+                "wind": lastWeek.iloc[i, 2],
+                "humidity": lastWeek.iloc[i, 3],
+                "pressure": lastWeek.iloc[i, 4],
+                "condition": labels[lastWeek.iloc[i, 5]]
+            }
+            json_str = json.dumps(day, cls=NpEncoder)
+            week.append(json_str)
+
+    return week
 
 
 def frequencyOfClothes():
     pass
+
+
+
