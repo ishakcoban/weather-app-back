@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_restful import Api, Resource
-from operations import linearReg, decisionTree, getLastWeek,getAllCategories,getAllSubCategories,getAllTypes,getAllColors,getAllClothes
+from operations import linearReg, decisionTree, getLastWeek, getAllCategories, getAllSubCategories, getAllTypes, \
+    getAllColors, getAllClothes, frequencyOfClothes
 
 app = Flask(__name__)
 api = Api(app)
@@ -31,38 +32,44 @@ class classify(Resource):
 
 class getLastWeekWeather(Resource):
     def get(self):
-
-        json = {"oneWeek" : getLastWeek()}
+        json = {"oneWeek": getLastWeek()}
         return json
+
 
 class getAllCategories_(Resource):
     def get(self):
-
-        json = {"categories" : getAllCategories()}
+        json = {"categories": getAllCategories()}
         return json
+
 
 class getAllSubCategories_(Resource):
     def get(self):
-
-        json = {"subCategories" : getAllSubCategories()}
+        json = {"subCategories": getAllSubCategories()}
         return json
+
 
 class getAllTypes_(Resource):
     def get(self):
-
-        json = {"types" : getAllTypes()}
+        json = {"types": getAllTypes()}
         return json
+
 
 class getAllColors_(Resource):
     def get(self):
-
-        json = {"colors" : getAllColors()}
+        json = {"colors": getAllColors()}
         return json
+
 
 class getAllClothes_(Resource):
     def get(self):
+        json = {"clothes": getAllClothes()}
+        return json
 
-        json = {"clothes" : getAllClothes()}
+
+class getAllClothStatus_(Resource):
+
+    def get(self, amount):
+        json = {"clothesStatus": frequencyOfClothes(amount)}
         return json
 
 
@@ -74,6 +81,7 @@ api.add_resource(getAllSubCategories_, "/subCategories")
 api.add_resource(getAllTypes_, "/types")
 api.add_resource(getAllColors_, "/colors")
 api.add_resource(getAllClothes_, "/clothes")
+api.add_resource(getAllClothStatus_,"/clothesStatus/<int:amount>")
 
 if __name__ == '__main__':
     app.run('0.0.0.0', 5000)

@@ -2,6 +2,8 @@ import csv
 
 from processDataset import dataset, clothes_dataset, labels
 import numpy as np
+from os import listdir
+from os.path import isfile, join
 from sklearn.tree import DecisionTreeClassifier
 import json
 import random
@@ -97,19 +99,12 @@ def getLastWeek():
     return week
 
 
-def frequencyOfClothes():
-    # print(clothes_dataset.iloc[0,:])
-    # find all clothes id and put them to an array
-    clothes_id = clothes_dataset.iloc[:, 0]
-    print(clothes_id[random.randint(0, len(clothes_id) - 1)])
-    print(clothes_dataset.iloc[0, :])
-    # with open('students.csv', 'w', newline='') as file:
-    #    writer = csv.writer(file)
-    #
-    #    writer.writerow(["SNo", "Name", "Subject"])
-    #    writer.writerow([1, "Ash Ketchum", "English"])
-    #    writer.writerow([2, "Gary Oak", "Mathematics"])
-    #    writer.writerow([3, "Brock Lesner", "Physics"])
+def frequencyOfClothes(amount):
+    imagePath = './archive/images'
+    imagefiles = [f.replace('.jpg', '') for f in listdir(imagePath) if isfile(join(imagePath, f))]
+    imagefiles = imagefiles[amount * 4 :amount * 4 + 4]
+    json_str = json.dumps(imagefiles, cls=NpEncoder)
+    return json_str
 
 
 def getAllCategories():
@@ -120,6 +115,7 @@ def getAllCategories():
     json_str = json.dumps(categories, cls=NpEncoder)
     return json_str
 
+
 def getAllSubCategories():
     subCategories = set()
     for i in range(0, len(clothes_dataset.iloc[0:100, 3])):
@@ -127,6 +123,7 @@ def getAllSubCategories():
     subCategories = list(subCategories)
     json_str = json.dumps(subCategories, cls=NpEncoder)
     return json_str
+
 
 def getAllTypes():
     types = set()
@@ -136,14 +133,16 @@ def getAllTypes():
     json_str = json.dumps(types, cls=NpEncoder)
     return json_str
 
+
 def getAllColors():
     colors = set()
     for i in range(0, len(clothes_dataset.iloc[:, 5])):
         if str(clothes_dataset.iloc[i, 5]) != 'NaN':
-            colors.add(str(clothes_dataset.iloc[i, 5]) )
+            colors.add(str(clothes_dataset.iloc[i, 5]))
     colors = list(colors)
     json_str = json.dumps(colors, cls=NpEncoder)
     return json_str
+
 
 def getAllClothes():
     clothes = set()
@@ -152,4 +151,3 @@ def getAllClothes():
     clothes = list(clothes)
     json_str = json.dumps(clothes, cls=NpEncoder)
     return json_str
-
